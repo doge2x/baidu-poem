@@ -55,28 +55,24 @@ const UserMessage = ({ children }: { children: React.ReactNode }) => {
 const PoemMessage = ({ keyword }: { keyword: string }) => {
   const [lines, setLines] = useState<string[] | undefined | string>();
 
-  useEffect(
-    () => {
-      getPoem({ text: keyword }).then((data) => {
-        if ("error_code" in data) {
-          setLines(data.error_msg);
-        } else {
-          const poem = data.poem[0].content.split("\t").reverse();
-          const tick = setInterval(() => {
-            const s = poem.pop();
-            if (!s) {
-              clearInterval(tick);
-            } else {
-              setLines((old) => [...(old as string[]), s]);
-            }
-          }, 500);
-          setLines([]);
-        }
-      });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  useEffect(() => {
+    getPoem({ text: keyword }).then((data) => {
+      if ("error_code" in data) {
+        setLines(data.error_msg);
+      } else {
+        const poem = data.poem[0].content.split("\t").reverse();
+        setLines([poem.pop()!]);
+        const tick = setInterval(() => {
+          const s = poem.pop();
+          if (!s) {
+            clearInterval(tick);
+          } else {
+            setLines((old) => [...(old as string[]), s]);
+          }
+        }, 500);
+      }
+    });
+  }, [keyword]);
 
   if (!lines) {
     return (
