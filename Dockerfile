@@ -6,7 +6,7 @@ FROM runtime AS base
 RUN rm /etc/apk/repositories &&\
     echo "https://mirrors.cloud.tencent.com/alpine/v3.17/main" >>/etc/apk/repositories &&\
     echo "https://mirrors.cloud.tencent.com/alpine/v3.17/community" >>/etc/apk/repositories &&\
-    echo "registry = http://registry.npm.taobao.org" >>/etc/npmrc
+    echo "registry=http://registry.npm.taobao.org" >>/etc/npmrc
 
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat &&\
@@ -41,7 +41,7 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs &&\
     adduser --system --uid 1001 nextjs
 
-COPY --from=app --chown=nextjs:nodejs /app .
+COPY --from=app --chown=nextjs:nodejs /app ./
 
 USER nextjs
 
