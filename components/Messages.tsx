@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
 import { Message } from "./Chat";
-import { getPoem } from "@/lib/api";
 import { BsRobot } from "react-icons/bs";
 import { BeatLoader } from "react-spinners";
+import { ApiRes, GetPoemRes } from "@/lib/types";
+import useSWR from "swr";
+import { newUrl } from "@/lib/util";
 
 const AlwaysScrollToBottom = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -52,46 +54,64 @@ const UserMessage = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const PoemMessage = ({ keyword }: { keyword: string }) => {
-  const [lines, setLines] = useState<string[] | undefined | string>();
+const fetchPoem = async ([url, keyword]: [string, string]) => {
+  const response = await fetch(newUrl(url), {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ text: keyword }),
+  });
+  const data: ApiRes<GetPoemRes> = await response.json();
+  if ("error_code" in data) {
+    throw new Error(data.error_msg);
+  } else {
+    return data.poem[0].content.split("\t");
+  }
+};
 
+const ShowLines = ({ data }: { data: string[] }) => {
+  const [lines, setLines] = useState<string[]>([]);
   useEffect(() => {
-    getPoem({ text: keyword }).then((data) => {
-      if ("error_code" in data) {
-        setLines(data.error_msg);
+    const reversed = [...data].reverse();
+    const tick = setInterval(() => {
+      const s = reversed.pop();
+      if (!s) {
+        clearInterval(tick);
       } else {
-        const poem = data.poem[0].content.split("\t").reverse();
-        setLines([poem.pop()!]);
-        const tick = setInterval(() => {
-          const s = poem.pop();
-          if (!s) {
-            clearInterval(tick);
-          } else {
-            setLines((old) => [...(old as string[]), s]);
-          }
-        }, 500);
+        setLines((old) => [...old, s]);
       }
-    });
-  }, [keyword]);
+    }, 500);
+  }, [data]);
+  return (
+    <>
+      {lines.map((txt, id) => (
+        <Text key={id}>{txt}</Text>
+      ))}
+    </>
+  );
+};
 
-  if (!lines) {
+const PoemMessage = ({ keyword }: { keyword: string }) => {
+  const { data, error, isLoading } = useSWR(["/api/poem", keyword], fetchPoem);
+
+  if (isLoading) {
     return (
       <AiMessage>
         <BeatLoader size={6} />
       </AiMessage>
     );
-  } else if (typeof lines == "string") {
+  } else if (!data) {
     return (
       <AiMessage>
-        <Text color="red">出错了😢！{lines}</Text>
+        <Text color="red">出错了😢！{error}</Text>
       </AiMessage>
     );
   } else {
     return (
       <AiMessage>
-        {lines.map((txt, id) => (
-          <Text key={id}>{txt}</Text>
-        ))}
+        <ShowLines data={data} />
       </AiMessage>
     );
   }
