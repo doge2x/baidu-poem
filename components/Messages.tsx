@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Avatar, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
 import { Message } from "./Chat";
 import { getPoem } from "@/lib/api";
 import { BsRobot } from "react-icons/bs";
@@ -14,8 +14,21 @@ const AlwaysScrollToBottom = () => {
 const AiMessage = ({ children }: { children: React.ReactNode }) => {
   return (
     <Flex w="100">
-      <Avatar bg="white" color="gray.900" icon={<BsRobot />}></Avatar>
-      <Flex bg="blue.50" borderRadius="0.3rem" maxW="56" my="1" p="3">
+      <Avatar
+        boxShadow="xl"
+        bg="white"
+        color="gray.900"
+        mr="2"
+        icon={<BsRobot />}
+      ></Avatar>
+      <Flex
+        boxShadow="xl"
+        bg="gray.50"
+        borderRadius="0.3rem"
+        maxW="56"
+        my="1"
+        p="3"
+      >
         <Text>{children}</Text>
       </Flex>
     </Flex>
@@ -25,7 +38,14 @@ const AiMessage = ({ children }: { children: React.ReactNode }) => {
 const UserMessage = ({ children }: { children: React.ReactNode }) => {
   return (
     <Flex w="100%" justify="flex-end">
-      <Flex bg="yellow.200" borderRadius="0.3rem" maxW="56" my="1" p="3">
+      <Flex
+        boxShadow="xl"
+        bg="yellow.200"
+        borderRadius="0.3rem"
+        maxW="56"
+        my="1"
+        p="3"
+      >
         <Text>{children}</Text>
       </Flex>
     </Flex>
@@ -35,15 +55,28 @@ const UserMessage = ({ children }: { children: React.ReactNode }) => {
 const PoemMessage = ({ keyword }: { keyword: string }) => {
   const [lines, setLines] = useState<string[] | undefined | string>();
 
-  useEffect(() => {
-    getPoem({ text: keyword }).then((data) => {
-      if ("error_code" in data) {
-        setLines(data.error_msg);
-      } else {
-        setLines(data.poem[0].content.split("\t"));
-      }
-    });
-  }, [keyword]);
+  useEffect(
+    () => {
+      getPoem({ text: keyword }).then((data) => {
+        if ("error_code" in data) {
+          setLines(data.error_msg);
+        } else {
+          const poem = data.poem[0].content.split("\t").reverse();
+          const tick = setInterval(() => {
+            const s = poem.pop();
+            if (!s) {
+              clearInterval(tick);
+            } else {
+              setLines((old) => [...(old as string[]), s]);
+            }
+          }, 500);
+          setLines([]);
+        }
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   if (!lines) {
     return (
@@ -94,7 +127,11 @@ export const Messages = ({ msgs }: { msgs: Message[] }) => {
         )"
     >
       {msgs.map((item, id) => {
-        return <Message key={id} msg={item} />;
+        return (
+          <Box key={id} mb="3">
+            <Message msg={item} />
+          </Box>
+        );
       })}
       <AlwaysScrollToBottom />
     </Flex>
