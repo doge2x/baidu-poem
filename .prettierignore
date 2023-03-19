@@ -1,2 +1,5 @@
-# pnpm
+# Pnpm
 pnpm-lock.yaml
+
+# Next.js
+.next

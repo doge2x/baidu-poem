@@ -43,7 +43,7 @@ const PoemMessage = ({ keyword }: { keyword: string }) => {
         setLines(data.poem[0].content.split("\t"));
       }
     });
-  });
+  }, [keyword]);
 
   if (!lines) {
     return (
@@ -81,7 +81,18 @@ const Message = ({ msg }: { msg: Message }) => {
 
 export const Messages = ({ msgs }: { msgs: Message[] }) => {
   return (
-    <Flex w="100%" h="80%" overflowY="scroll" flexDirection="column" p="3">
+    <Flex
+      w="100%"
+      h="80%"
+      p="3"
+      overflowY="scroll"
+      flexDirection="column"
+      bg="repeating-linear-gradient(
+          45deg,
+          transparent 0 5rem,
+          var(--chakra-colors-yellow-50) 5rem 9rem
+        )"
+    >
       {msgs.map((item, id) => {
         return <Message key={id} msg={item} />;
       })}
