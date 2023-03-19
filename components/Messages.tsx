@@ -13,9 +13,9 @@ const AlwaysScrollToBottom = () => {
 
 const AiMessage = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Flex w="100%">
-      <Avatar bg="transparent" color="gray.900" icon={<BsRobot />}></Avatar>
-      <Flex bg="gray.100" minW="24" maxW="56" my="1" p="3">
+    <Flex w="100">
+      <Avatar bg="white" color="gray.900" icon={<BsRobot />}></Avatar>
+      <Flex bg="blue.50" borderRadius="0.3rem" maxW="56" my="1" p="3">
         <Text>{children}</Text>
       </Flex>
     </Flex>
@@ -25,7 +25,7 @@ const AiMessage = ({ children }: { children: React.ReactNode }) => {
 const UserMessage = ({ children }: { children: React.ReactNode }) => {
   return (
     <Flex w="100%" justify="flex-end">
-      <Flex bg="yellow.200" minW="24" maxW="56" my="1" p="3">
+      <Flex bg="yellow.200" borderRadius="0.3rem" maxW="56" my="1" p="3">
         <Text>{children}</Text>
       </Flex>
     </Flex>
