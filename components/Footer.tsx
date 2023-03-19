@@ -17,7 +17,7 @@ export const Footer = ({
   };
 
   return (
-    <Flex w="100%" mt="2" p="3" px="6">
+    <Flex w="100%" mt="1" mb="5" p="3" px="6">
       <Input
         variant="flushed"
         colorScheme="yellow"
