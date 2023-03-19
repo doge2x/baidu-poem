@@ -105,7 +105,8 @@ const PoemMessage = ({ keyword }: { keyword: string }) => {
   } else if (!data) {
     return (
       <AiMessage>
-        <Text color="red">出错了😢！{error}</Text>
+        <Text color="red">出错了！😢</Text>
+        <Text color="red">{String(error)}</Text>
       </AiMessage>
     );
   } else {
