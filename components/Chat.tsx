@@ -35,7 +35,7 @@ export function Chat() {
 
   return (
     <Flex w="100%" h="100vh" justify="center" align="center">
-      <Flex w={["100%", "100%", "60%"]} h="100%" px="1" py="5" flexDir="column">
+      <Flex w={["100%", "100%", "60%"]} h="100%" flexDir="column">
         <Header />
         <Divider />
         <Messages msgs={messages} />
