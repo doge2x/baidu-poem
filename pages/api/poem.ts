@@ -48,10 +48,13 @@ const post = async (params: GetPoem) => {
   return await getPoem(params);
 };
 
-const handler = (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case "POST":
-      post(req.body).then((data) => res.status(200).json(data));
+      res.status(200).json(await post(req.body));
+      break;
+    default:
+      res.status(405).end();
   }
 };
 
