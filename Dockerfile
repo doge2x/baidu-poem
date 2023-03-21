@@ -24,6 +24,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ARG BASE_PATH
+ENV NEXT_PUBLIC_BASE_PATH=$BASE_PATH
+
 RUN pnpm build
 
 # Copy build output to a standalone image
