@@ -24,9 +24,6 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG BASE_PATH
-ENV NEXT_PUBLIC_BASE_PATH=$BASE_PATH
-
 RUN pnpm build
 
 # Copy build output to a standalone image
@@ -41,8 +38,8 @@ FROM base AS app
 WORKDIR /app
 
 # Add group and user
-RUN addgroup --system --gid 1000 nodejs && \
-    adduser --system --uid 1000 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
 COPY --from=artifact --chown=nextjs:nodejs /app ./
 
