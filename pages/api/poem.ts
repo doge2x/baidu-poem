@@ -6,8 +6,8 @@ let ACCESS_TOKEN: undefined | OauthError | OauthRes;
 async function getAccessToken(): Promise<OauthError | OauthRes> {
   if (ACCESS_TOKEN == undefined) {
     const url = newUrl("https://aip.baidubce.com/oauth/2.0/token", {
-      client_id: process.env.API_KEY,
-      client_secret: process.env.SECRET_KEY,
+      client_id: process.env.BD_API_KEY,
+      client_secret: process.env.BD_SECRET_KEY,
       grant_type: "client_credentials",
     });
     const response = await fetch(url, {
